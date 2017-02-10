@@ -14,37 +14,27 @@ namespace ConsoleApplication
         {
             public A a;
         }
-
+        enum TestEnum { uno, dos, tres };
         public static void useStruct(Str s)
         {
             s.a.speak();
         }
-
-        enum TestEnum { uno, dos, tres };
-
-        #region
-        class Parent { };
-        class Son : Parent { };
-        class Daughter : Parent { };
-        #endregion
-
         public static void Main(string[] args)
         {
             #region [Uses for different types]
+            {
+                //floating types
+                decimal dec_pi = 3.141592653589793238462643383279502884197169399375105820974944592307816406286M; //significant digits limit
+                double d_pi = System.Math.PI;
+                float f_pi = (float)d_pi;
 
-            //floating types
-            decimal dec_pi = 3.141592653589793238462643383279502884197169399375105820974944592307816406286M; //significant digits limit
-            double d_pi = System.Math.PI;
-            float f_pi = (float)d_pi;
+                //enums
+                TestEnum testEnum = TestEnum.uno;
+                Console.WriteLine(testEnum.ToString());
 
-            //enums
-            TestEnum testEnum = TestEnum.uno;
-            Console.WriteLine(testEnum.ToString());
-
-            //Code Snippets
-            //switch...
-
-
+                //Code Snippets
+                //switch...
+            }
             #endregion
 
             #region [CLR Synonyms]
@@ -52,6 +42,7 @@ namespace ConsoleApplication
                 int i;
                 System.Int32 si;
                 DateTime dt;
+                string sNull;
                 string s = "string";
 
                 System.Console.WriteLine(typeof(string));
@@ -90,28 +81,32 @@ namespace ConsoleApplication
             }
             #endregion
 
-
             #region [Gotchas]
-            A a;
-            A[] arr = new A[10];
-            foreach (var aa in arr)
             {
-                System.Console.WriteLine(aa.speak());
+                A a;
+                A[] arr = new A[10];
+                foreach (var aa in arr)
+                {
+                    System.Console.WriteLine(aa.speak());
+                }
+
+                Str str;
+                str.a = null;
+                useStruct(str);
+
+                Str str1 = new Str();
+                useStruct(str1);
+
+                string s = "string";
+                s.ToUpper();
             }
-
-            Str str;
-            str.a = null;
-            useStruct(str);
-
-            Str str1 = new Str();
-            useStruct(str1);
-
             #endregion
 
-
+            #region [defaults]
             object obj = default(decimal);
+            #endregion
 
-
+            System.Console.WriteLine("Thats All Folks!");
             System.Console.ReadLine();
 
         }
