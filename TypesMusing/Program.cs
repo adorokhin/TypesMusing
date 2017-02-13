@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace ConsoleApplication
 {
@@ -14,7 +15,34 @@ namespace ConsoleApplication
         {
             public A a;
         }
-        enum TestEnum { uno, dos, tres };
+
+        [StructLayout(LayoutKind.Explicit)]
+        public struct RGBA
+        {
+            [FieldOffset(0)]
+            public byte A;
+            [FieldOffset(1)]
+            public byte B;
+            [FieldOffset(2)]
+            public byte G;
+            [FieldOffset(3)]
+            public byte R;
+            [FieldOffset(0)]
+            public uint _ColorHex;
+        }
+
+        [Flags]
+        enum DaysOfWeek : byte
+        {
+            Mon = 0x01,
+            Tue = 0x02,
+            Wed = 0x04,
+            Thu = 0x08,
+            Fri = 0x10,
+            Sat = 0x20,
+            Sun = 0x40
+        };
+
         public static void useStruct(Str s)
         {
             s.a.speak();
@@ -57,13 +85,6 @@ namespace ConsoleApplication
                 decimal dec_pi = 3.141592653589793238462643383279502884197169399375105820974944592307816406286M; //significant digits limit
                 double d_pi = System.Math.PI;
                 float f_pi = (float)d_pi;
-
-                //enums
-                TestEnum testEnum = TestEnum.uno;
-                Console.WriteLine(testEnum.ToString());
-
-                //Code Snippets
-                //switch...
             }
             #endregion
 
@@ -151,10 +172,14 @@ namespace ConsoleApplication
                 f = (float)double.MaxValue;
 
                 f = float.MaxValue + 1;
-                if(float.IsInfinity(f))
+                if (float.IsInfinity(f))
                     Console.WriteLine("To Infinity and Beyond");
 
+                //what if casting to unsighn?
+                ushort us = unchecked((ushort)int.MaxValue);
 
+                //Mask
+                us = unchecked((ushort)0xFFFF000A);
 
 
                 try
@@ -208,7 +233,7 @@ namespace ConsoleApplication
                 }
                 catch (Exception) { }
 
-                
+
                 try
                 {
                     uint ui = uint.MaxValue;
@@ -252,6 +277,55 @@ namespace ConsoleApplication
 
                 Console.WriteLine("--------");
                 Console.WriteLine(a[0]);
+            }
+            #endregion
+
+            #region [Enums]
+            {
+                //enums
+                DaysOfWeek dOfW = DaysOfWeek.Mon;
+                Console.WriteLine(dOfW.ToString());
+                Console.WriteLine((byte)dOfW);
+
+                //Code Snippets
+                //switch...
+
+                foreach (byte d in Enum.GetValues(typeof(DaysOfWeek)))
+                    Console.WriteLine(d.ToString());
+
+                foreach (string s in Enum.GetNames(typeof(DaysOfWeek)))
+                    Console.WriteLine(s);
+
+                byte goodDays = (byte)DaysOfWeek.Sat | (byte)DaysOfWeek.Sun;
+                byte badDays = (byte)DaysOfWeek.Mon | (byte)DaysOfWeek.Tue | (byte)DaysOfWeek.Wed | (byte)DaysOfWeek.Thu | (byte)DaysOfWeek.Fri;
+
+                Console.WriteLine(((goodDays & (byte)DaysOfWeek.Sat) == 1) ? "Good Day" : "Bad Day");
+            }
+            #endregion
+
+            #region [Struct fun]
+            {
+                RGBA rgba;
+                rgba._ColorHex = 0x428CF400;
+                //rgba(66, 140, 244, 0)
+                //    #42  8c   f4
+            }
+            #endregion
+
+            #region [Nullables]
+            {
+                Nullable<int> i = null;
+                int? ii = null;
+
+                Console.WriteLine(i.HasValue ? i.Value.ToString() : "NULL");
+                i = i.GetValueOrDefault();
+            }
+            #endregion
+
+            #region [dynamic]
+            {
+                dynamic a = new A();
+                a.ThisMethiodDoesNotExistsAndWillFailAtRuntime();
             }
             #endregion
 
